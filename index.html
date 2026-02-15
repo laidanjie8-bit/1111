@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>钢筋间距检测平台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <h1>钢筋检测平台</h1>
+      <button class="nav-btn active" data-tab="task">检测任务</button>
+      <button class="nav-btn" data-tab="records">检测记录查询</button>
+      <button class="nav-btn" data-tab="anomaly">异常数据追踪</button>
+    </aside>
+
+    <main class="main">
+      <section id="task" class="tab active">
+        <h2>检测任务</h2>
+        <div class="card">
+          <h3>1) 图像采集与文档上传</h3>
+          <div class="row">
+            <button id="createTaskBtn">创建任务</button>
+            <label>上传图像 <input id="imageInput" type="file" accept=".jpg,.jpeg,.png,.bmp" multiple /></label>
+            <label>上传文档 <input id="docInput" type="file" accept=".pdf,.doc,.docx" multiple /></label>
+            <button id="runBtn" class="primary">启动检测流程</button>
+          </div>
+          <p id="taskId">当前任务：未创建</p>
+        </div>
+
+        <div class="card">
+          <h3>2) 流程状态</h3>
+          <ol id="steps">
+            <li>创建任务/上传数据</li>
+            <li>三维重建（GeoMVSNet）</li>
+            <li>实例分割（Mask3D-rebar）</li>
+            <li>间距计算（TACLS）</li>
+            <li>合规判定（TBCC）</li>
+          </ol>
+          <div class="progress"><span id="progressBar"></span></div>
+        </div>
+
+        <div class="card">
+          <h3>3) 间距计算与合规结果</h3>
+          <div id="summary"></div>
+          <table>
+            <thead>
+              <tr><th>钢筋ID</th><th>设计间距(mm)</th><th>实测间距(mm)</th><th>偏差(mm)</th><th>合规判定</th></tr>
+            </thead>
+            <tbody id="resultBody"><tr><td colspan="5">暂无结果</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="records" class="tab">
+        <h2>检测记录查询</h2>
+        <div class="card">
+          <div class="row">
+            <input id="projectFilter" placeholder="项目名称关键字" />
+            <button id="searchRecord">查询</button>
+          </div>
+          <table>
+            <thead><tr><th>记录ID</th><th>项目</th><th>构件</th><th>检测时间</th><th>结论</th></tr></thead>
+            <tbody id="recordBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="anomaly" class="tab">
+        <h2>异常数据追踪</h2>
+        <div class="card">
+          <table>
+            <thead><tr><th>异常ID</th><th>任务ID</th><th>类型</th><th>描述</th><th>状态</th><th>负责人</th><th>操作</th></tr></thead>
+            <tbody id="anomalyBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
