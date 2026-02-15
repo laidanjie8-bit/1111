@@ -1,0 +1,63 @@
+* { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body { margin: 0; display: flex; min-height: 100vh; background: #f3f6fb; color: #1e2430; }
+.hidden { display: none !important; }
+
+.login-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 20% 20%, #3c63b8, #1f2a44 60%); z-index: 30; }
+.login-card { width: 360px; background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 10px 30px rgba(10,20,40,.35); }
+.login-card h2 { margin: 0 0 6px; }
+.login-tip { margin: 0 0 14px; color: #5f6b80; }
+.login-card label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.login-card input { width: 100%; }
+.login-card button { width: 100%; margin-top: 4px; }
+.login-error { color: #dc2626; min-height: 20px; margin: 8px 0 0; }
+.login-hint { margin-top: 8px; color: #74809a; font-size: 12px; }
+
+.sidebar { width: 250px; background: linear-gradient(180deg,#1f2a44,#28385f); color: #fff; padding: 18px 14px; }
+.sidebar h1 { margin: 0; font-size: 20px; }
+.subtitle { margin: 6px 0 12px; opacity: .8; font-size: 12px; }
+.user-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; font-size: 12px; }
+.user-bar button { padding: 4px 8px; border-radius: 6px; border: 1px solid #89a1d6; background: #3f5589; color: #fff; }
+
+.nav-btn { width: 100%; border: 0; background: #344b7a; color: #fff; padding: 11px; border-radius: 8px; text-align: left; cursor: pointer; margin-bottom: 8px; }
+.nav-btn.active { background: #4f6ea6; font-weight: 600; }
+.main { flex: 1; padding: 16px; overflow: auto; }
+.tab { display: none; }
+.tab.active { display: block; }
+.page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.page-head h2 { margin: 0; }
+.badge { background: #e7efff; color: #284da9; padding: 5px 10px; border-radius: 999px; font-size: 13px; }
+.grid.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(20,30,50,.08); }
+.card h3 { margin-top: 0; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+input { border: 1px solid #c8d4ea; border-radius: 8px; padding: 8px; min-width: 180px; }
+button { border: 1px solid #becae0; background: #fff; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+button:hover { opacity: .92; }
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.file-list { margin: 8px 0 0; padding-left: 18px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ol { margin: 0; padding-left: 20px; }
+ol li { margin: 6px 0; padding: 8px; border-left: 4px solid #d0d8e8; background: #f9fbff; border-radius: 6px; }
+ol li.done { border-left-color: #16a34a; background: #effff4; }
+ol li.active-step { border-left-color: #2563eb; background: #eef4ff; }
+.progress { height: 10px; background: #e3e9f4; border-radius: 999px; overflow: hidden; margin-top: 10px; }
+.progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg,#2563eb,#16a34a); transition: width .25s; }
+.hint { color: #5f6b80; margin: 8px 0 0; }
+.summary { margin-bottom: 10px; font-weight: 600; }
+.viewer-canvas { width: 100%; min-height: 240px; border: 1px dashed #9db1d8; border-radius: 10px; background: #f7faff; }
+.tag { color: #fff; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.tag.ok { background: #16a34a; }
+.tag.bad { background: #dc2626; }
+.status-open { color: #dc2626; font-weight: 700; }
+.status-progress { color: #d97706; font-weight: 700; }
+.status-closed { color: #16a34a; font-weight: 700; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border-bottom: 1px solid #e8edf6; padding: 8px; text-align: left; vertical-align: top; }
+.timeline { margin: 0; padding-left: 18px; }
+.timeline li { margin: 6px 0; }
+@media (max-width: 1100px) {
+  .grid.two, .form-grid, .mini-grid { grid-template-columns: 1fr; }
+  .sidebar { width: 210px; }
+}

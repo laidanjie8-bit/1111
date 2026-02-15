@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>钢筋间距检测平台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="loginOverlay" class="login-overlay">
+      <div class="login-card">
+        <h2>系统登录</h2>
+        <p class="login-tip">钢筋间距检测平台</p>
+        <label>用户名<input id="loginUsername" placeholder="请输入用户名" value="admin" /></label>
+        <label>密码<input id="loginPassword" type="password" placeholder="请输入密码" value="123456" /></label>
+        <button id="loginBtn" class="primary">登录</button>
+        <p id="loginError" class="login-error"></p>
+        <p class="login-hint">演示账号：admin / 123456</p>
+      </div>
+    </div>
+
+    <aside class="sidebar app-shell hidden" id="appSidebar">
+      <h1>钢筋间距检测</h1>
+      <p class="subtitle">GeoMVSNet / Mask3D-rebar / TACLS / TBCC</p>
+      <div class="user-bar">
+        <span id="currentUser">未登录</span>
+        <button id="logoutBtn">退出</button>
+      </div>
+      <button class="nav-btn active" data-tab="task">检测任务</button>
+      <button class="nav-btn" data-tab="records">检测记录查询</button>
+      <button class="nav-btn" data-tab="anomaly">异常数据追踪</button>
+    </aside>
+
+    <main class="main app-shell hidden" id="appMain">
+      <section id="task" class="tab active">
+        <div class="page-head">
+          <h2>检测任务总览</h2>
+          <span id="taskBadge" class="badge">当前任务：未创建</span>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>1) 图像采集与文档上传</h3>
+            <div class="row">
+              <button id="createTaskBtn">创建任务</button>
+              <label>上传图像<input id="imageInput" type="file" accept=".jpg,.jpeg,.png,.bmp" multiple /></label>
+              <label>上传文档<input id="docInput" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple /></label>
+              <button id="runBtn" class="primary">启动检测流程</button>
+            </div>
+            <div class="mini-grid">
+              <div>
+                <strong>图像文件</strong>
+                <ul id="imageList" class="file-list"><li>暂无</li></ul>
+              </div>
+              <div>
+                <strong>文档文件</strong>
+                <ul id="docList" class="file-list"><li>暂无</li></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>2) 检测参数</h3>
+            <div class="form-grid">
+              <label>项目名称<input id="projectName" value="地铁 12 号线 A 标" /></label>
+              <label>构件编号<input id="componentName" value="3#桥墩承台" /></label>
+              <label>设计间距(mm)<input id="designSpacing" type="number" value="150" /></label>
+              <label>允许偏差(mm)<input id="allowedDeviation" type="number" value="10" /></label>
+              <label>标定比例(mm/px)<input id="scaleMmPerPx" type="number" value="3.0" step="0.1" /></label>
+              <label>分割阈值(0-255)<input id="segThreshold" type="number" value="120" /></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>3) 算法流水线执行状态</h3>
+          <ol id="steps">
+            <li>创建任务/上传数据</li>
+            <li>三维重建（GeoMVSNet）</li>
+            <li>实例分割（Mask3D-rebar）</li>
+            <li>间距计算（TACLS）</li>
+            <li>合规判定（TBCC）</li>
+          </ol>
+          <div class="progress"><span id="progressBar"></span></div>
+          <p id="pipelineLog" class="hint">等待启动...</p>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>4) 三维重建（基于图像生成点云示意）</h3>
+            <canvas id="reconCanvas" class="viewer-canvas" width="520" height="260"></canvas>
+          </div>
+          <div class="card">
+            <h3>5) 实例分割（Mask3D-rebar）</h3>
+            <canvas id="segCanvas" class="viewer-canvas" width="520" height="260"></canvas>
+            <table>
+              <thead><tr><th>实例ID</th><th>中心列(px)</th><th>置信度</th><th>状态</th></tr></thead>
+              <tbody id="segBody"><tr><td colspan="4">暂无分割结果</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>6) 间距计算（TACLS）+ 合规判定（TBCC）</h3>
+          <div id="summary" class="summary">暂无结果</div>
+          <table>
+            <thead>
+              <tr>
+                <th>钢筋ID</th><th>设计间距(mm)</th><th>实测间距(mm)</th><th>偏差(mm)</th><th>TACLS评分</th><th>TBCC判定</th>
+              </tr>
+            </thead>
+            <tbody id="resultBody"><tr><td colspan="6">暂无结果</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="records" class="tab">
+        <div class="page-head"><h2>检测记录查询</h2></div>
+        <div class="card">
+          <div class="row">
+            <input id="projectFilter" placeholder="项目关键字" />
+            <input id="statusFilter" placeholder="状态关键字(如 合规/异常)" />
+            <button id="searchRecord">查询</button>
+            <button id="resetRecord">重置</button>
+          </div>
+          <table>
+            <thead><tr><th>记录ID</th><th>项目</th><th>构件</th><th>检测时间</th><th>结论</th><th>操作</th></tr></thead>
+            <tbody id="recordBody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>记录详情</h3>
+          <div id="recordDetail" class="hint">点击“查看详情”后显示。</div>
+        </div>
+      </section>
+
+      <section id="anomaly" class="tab">
+        <div class="page-head"><h2>异常数据追踪与闭环</h2></div>
+        <div class="card">
+          <table>
+            <thead><tr><th>异常ID</th><th>任务ID</th><th>类型</th><th>描述</th><th>状态</th><th>负责人</th><th>根因</th><th>操作</th></tr></thead>
+            <tbody id="anomalyBody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>异常追踪日志</h3>
+          <ul id="traceLog" class="timeline"><li>暂无操作记录</li></ul>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
